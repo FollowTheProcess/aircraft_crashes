@@ -14,10 +14,9 @@ dependencies:
   - requests
   - numpy
   - pandas
-  - matplotlib
-  - seaborn
   - altair
   - altair_data_server
   - altair_saver
   - ipykernel
   - jupyterlab
+  - kaggle
