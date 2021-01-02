@@ -1,0 +1,23 @@
+name: aircraft_crashes
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  # Some common data packages in here by default
+  - python>3.7
+  - invoke
+  - black
+  - flake8
+  - isort
+  - mypy
+  - rich
+  - requests
+  - numpy
+  - pandas
+  - matplotlib
+  - seaborn
+  - altair
+  - altair_data_server
+  - altair_saver
+  - ipykernel
+  - jupyterlab
