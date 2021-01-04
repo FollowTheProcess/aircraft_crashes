@@ -21,3 +21,4 @@ dependencies:
   - jupyterlab
   - kaggle
   - pandas-profiling
+  - scikit-learn
