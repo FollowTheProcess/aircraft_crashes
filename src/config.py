@@ -90,3 +90,48 @@ US_STATES = [
     "West Virginia",
     "Wyoming",
 ]
+
+TOP_10_COUNTRIES = set(
+    [
+        "United States",
+        "Russia",
+        "Brazil",
+        "Colombia",
+        "France",
+        "India",
+        "Japan",
+        "Indonesia",
+        "China",
+        "Canada",
+    ]
+)
+
+TOP_10_MANUFACTURERS = set(
+    [
+        "Boeing",
+        "Douglas",
+        "Lockheed",
+        "McDonell Douglas",
+        "Antonov",
+        "Tupolev",
+        "Ilyushin",
+        "Airbus",
+        "De Havilland",
+        "Fokker",
+    ]
+)
+
+MONTHS = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+]
