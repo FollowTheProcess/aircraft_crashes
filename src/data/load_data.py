@@ -8,7 +8,7 @@ Created: 03/01/2021
 
 import pandas as pd
 
-from src.config import RAW_DATA
+from src.config import RAW_DATA, US_STATES
 
 
 class Data:
@@ -39,9 +39,11 @@ class Data:
             "country",
             "sector",
             "operator",
+            "manufacturer",
             "type",
             "aboard",
             "fatalities",
+            "fatality_pct",
             "ground",
             "summary",
         ]
@@ -67,10 +69,66 @@ class Data:
 
         if "military" in operator.lower():
             return "Military"
-        elif "private" in operator.lower() or "business" in operator.lower():
-            return "Private"
         else:
-            return "Commercial"
+            return "Civilian"
+
+    @staticmethod
+    def _get_aircraft_manufacturer(type: str) -> str:
+        """
+        Method to extract the aircraft manufacturer
+        from the type column.
+
+        Args:
+            type (str): Contents of the 'type' column
+
+        Returns:
+            str: Aircraft manufacturer.
+        """
+
+        if "de havilland" in type.strip().lower():
+            # Notable manufacturer with a space in it's name
+            return "De Havilland"
+        elif "mcdonnell douglas" in type.strip().lower():
+            # Another space one
+            return "McDonell Douglas"
+        else:
+            # Return the first word
+            return type.split(" ")[0]
+
+    @staticmethod
+    def _country_tidier(country: str) -> str:
+        """
+        Does a bunch of things to the country column:
+        * Checks if it's a US state and returns "United States"
+        * Converts USSR to Russia
+        * Checks if the string is like Atlantic/Pacific ocean and
+        returns tidier representation if true.
+
+        Called in an apply.
+
+        Args:
+            country (str): Contents of df['country']
+
+        Returns:
+            str: Cleaned value.
+        """
+
+        states = {state.lower().strip() for state in US_STATES}
+
+        if country.lower().strip() in states:
+            return "United States"
+        elif country.lower().strip() == "ussr":
+            return "Russia"
+        elif country.lower().strip() == "russia":
+            # There was a weird thing where Russia would appear twice intermittently
+            # This appears to have solved it
+            return "Russia"
+        elif "atlantic" in country.lower().strip():
+            return "Atlantic Ocean"
+        elif "pacific" in country.lower().strip():
+            return "Pacific Ocean"
+        else:
+            return country
 
     def load(self, clean: bool = True) -> pd.DataFrame:
         """
@@ -98,21 +156,32 @@ class Data:
                 .applymap(lambda x: x.strip() if isinstance(x, str) else x)
                 .assign(
                     year=lambda x: x["date"].dt.year.astype("int64"),
-                    month=lambda x: x["date"].dt.month_name().astype("string"),
-                    location=lambda x: x["location"].astype("string"),
+                    month=lambda x: x["date"]
+                    .dt.month_name()
+                    .astype("string")
+                    .str.strip(),
+                    location=lambda x: x["location"].astype("string").str.strip(),
                     country=lambda x: x["location"]
                     .str.strip()
                     .str.split(",")
                     .str.get(-1)
+                    .str.strip()
+                    .apply(self._country_tidier)
                     .astype("category"),
-                    operator=lambda x: x["operator"].astype("string"),
-                    type=lambda x: x["type"].astype("string"),
+                    operator=lambda x: x["operator"].astype("string").str.strip(),
+                    type=lambda x: x["type"].astype("string").str.strip(),
                     aboard=lambda x: x["aboard"].astype("int64"),
                     fatalities=lambda x: x["fatalities"].astype("int64"),
                     ground=lambda x: x["ground"].astype("int64"),
-                    summary=lambda x: x["summary"].astype("string"),
+                    fatality_pct=lambda x: (x["fatalities"] / x["aboard"]).astype(
+                        "float64"
+                    ),
+                    summary=lambda x: x["summary"].astype("string").str.strip(),
                     sector=lambda x: x["operator"]
                     .apply(self._determine_sector)
+                    .astype("category"),
+                    manufacturer=lambda x: x["type"]
+                    .apply(self._get_aircraft_manufacturer)
                     .astype("category"),
                 )
                 .pipe(self._reorder_columns)

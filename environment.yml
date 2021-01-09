@@ -21,3 +21,7 @@ dependencies:
   - jupyterlab
   - kaggle
   - pandas-profiling
+  - scikit-learn
+  - wordcloud
+  - matplotlib
+  - seaborn
