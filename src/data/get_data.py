@@ -10,6 +10,9 @@ from kaggle.api.kaggle_api_extended import KaggleApi
 
 from src.config import RAW_DATA
 
+if not RAW_DATA.exists():
+    RAW_DATA.mkdir(parents=True)
+
 api = KaggleApi()
 api.authenticate()
 
