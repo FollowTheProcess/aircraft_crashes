@@ -87,6 +87,7 @@ fig2 = (
         y=alt.Y(
             "fatality_pct:Q", title="Crash Fatality Rate", axis=alt.Axis(format="%")
         ),
+        color=alt.Color("fatality_pct:Q", title=None, scale=alt.Scale(scheme="blues")),
     )
     .properties(title="Mean Crash Fatality Rate by Country", height=500, width=750)
     .configure_axisX(labelAngle=-40)
@@ -168,6 +169,7 @@ fig8 = (
         y=alt.Y(
             "fatality_pct:Q", title="Crash Fatality Rate", axis=alt.Axis(format="%")
         ),
+        color=alt.Color("fatality_pct:Q", title=None, scale=alt.Scale(scheme="blues")),
     )
     .properties(
         title="Mean Crash Fatality Rate by Aircraft Manufacturer", height=500, width=750
